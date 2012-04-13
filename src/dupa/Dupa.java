@@ -18,7 +18,6 @@ public class Dupa {
   public static void main(String[] args) {
     if (args.length > 0) {
       DupFinder finder = new DupFinder();
-      //finder.addPath("L:/devel/dupa");
       finder.addPath(args[0]);
       DuplicatesList dupList = finder.find();
       formatOutput(dupList);
