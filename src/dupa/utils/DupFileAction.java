@@ -29,7 +29,7 @@ public class DupFileAction extends FindFileAction {
   //@Override
   public void run(DupFile file) {
     //System.out.print(file.getPath() + ": " + file.length() + "\n");
-    list.collect(file);
+    //list.collect(file);
   }
 
 }

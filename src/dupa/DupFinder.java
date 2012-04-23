@@ -1,35 +1,93 @@
 package dupa;
 
-import dupa.utils.*;
+import dupa.events.*;
+import dupa.utils.DuplicatesList;
+import dupa.utils.HashDuplicatesList;
+import dupa.utils.FileWalker;
 import java.util.ArrayList;
-
 
 /**
  *
  * @author Alexander Glumoff
  */
-public class DupFinder {
+public class DupFinder implements DupFileListener {
 
-  private ArrayList<DupFile> searchPathes = new ArrayList<>();
+  private FileList allFiles;
+  private DuplicatesList dupsOnSize;
+  private DuplicatesList dupsOnName;
+  private HashDuplicatesList dupsOnHash;
+  private ArrayList<String> searchPathes = new ArrayList<>();
+  private DupFileEventProducer eventProducer;
 
-  public DuplicatesList find() {
-    DuplicatesList dups = findCandidates();
-    dups.checkCandidates(new HashSumFileAction());
-    return dups;
+  public DupFinder() {
+    allFiles = new FileList();
+    dupsOnSize = new DuplicatesList();
+    dupsOnName = new DuplicatesList();
+    dupsOnHash = new HashDuplicatesList();
+    eventProducer = new DupFileEventProducer();
+  }
+
+  public void find() {
+    FileWalker fw = new FileWalker();
+    //DuplicatesList dups = new DuplicatesList();
+    eventProducer.addListener(this);
+    fw.setEventProducer(eventProducer);
+    for (String path : searchPathes) {
+      fw.walk(path);
+    }
   }
 
   public void addPath(String path) {
-    searchPathes.add(new DupFile(path));
+    searchPathes.add(path);
   }
 
-  private DuplicatesList findCandidates() {
-    FileWalker fw = new FileWalker();
-    DuplicatesList dups = new DuplicatesList();
-    fw.setAction(new DupFileAction(dups));
-    for (DupFile f : searchPathes) {
-      fw.walk(f);
+  public HashDuplicatesList getDupsOnHash() {
+    return dupsOnHash;
+  }
+
+  public void setDupsOnHash(HashDuplicatesList dupsOnHash) {
+    this.dupsOnHash = dupsOnHash;
+  }
+
+  public DuplicatesList getDupsOnName() {
+    return dupsOnName;
+  }
+
+  public void setDupsOnName(DuplicatesList dupsOnName) {
+    this.dupsOnName = dupsOnName;
+  }
+
+  public DuplicatesList getDupsOnSize() {
+    return dupsOnSize;
+  }
+
+  public void setDupsOnSize(DuplicatesList dupsOnSize) {
+    this.dupsOnSize = dupsOnSize;
+  }
+
+  @Override
+  public void NewFileFound(FileFoundEvent ev) {
+    //System.out.println("File found: " + ev.getFoundedFile());
+    DupFile F = ev.getFile();
+    allFiles.add(F);
+    Duplicate dup = dupsOnSize.collect(F);
+    if (dup != null) {
+      eventProducer.fireSizeDuplicateFound(F);
     }
-    dups.cleanUp();
-    return dups;
+  }
+
+  @Override
+  public void SizeDuplicateFound(SizeDuplicateFoundEvent ev) {
+    System.out.println("Size duplicate found: " + ev.getFile());
+    DupFile F = ev.getFile();
+    Duplicate dup = dupsOnSize.collect(F);
+    if (dup != null) {
+      eventProducer.fireHashDuplicateFound(dup);
+    }
+  }
+
+  @Override
+  public void HashDuplicateFound(HashDuplicateFoundEvent ev) {
+    System.out.println("Exact duplicate found: " + ev.getDup());
   }
 }

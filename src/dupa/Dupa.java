@@ -19,20 +19,20 @@ public class Dupa {
     if (args.length > 0) {
       DupFinder finder = new DupFinder();
       finder.addPath(args[0]);
-      DuplicatesList dupList = finder.find();
-      formatOutput(dupList);
+      finder.find();
+      //formatOutput(dupList);
     }
   }
 
   public static void formatOutput(DuplicatesList dupList) {
-    Set set = dupList.getHashMap().entrySet();
-    Iterator it = set.iterator();
-    int dupNum = 0;
-    System.out.println("<duplicates>");
-    while (it.hasNext()) {
-      dupNum++;
-      Map.Entry<String, ArrayList<DupFile>> me = (Map.Entry<String, ArrayList<DupFile>>) it.next();
-      Iterator it2 = me.getValue().iterator();
+//    Set set = dupList.getHashMap().entrySet();
+//    Iterator it = set.iterator();
+//    int dupNum = 0;
+//    System.out.println("<duplicates>");
+//    while (it.hasNext()) {
+//      dupNum++;
+//      Map.Entry<String, ArrayList<DupFile>> me = (Map.Entry<String, ArrayList<DupFile>>) it.next();
+//      Iterator it2 = me.getValue().iterator();
 //      System.out.println(dupNum + ". md5: " + me.getKey());
 //      while (it2.hasNext()) {
 //        File f = (File) it2.next();
@@ -40,13 +40,13 @@ public class Dupa {
 //        //f.setMd5sum(me.getKey());
 //        //list.add(f);
 //      }
-      System.out.printf("<duplicate id=\"%d\" md5=\"%s\">\n", dupNum, me.getKey());
-      while (it2.hasNext()) {
-        DupFile f = (DupFile) it2.next();
-        System.out.printf("<file path=\"%s\" size=\"%d\"/>\n", f.getAbsolutePath(), f.length());
-      }
-      System.out.println("</duplicate>");
-    }
-    System.out.println("</duplicates>");
+//      System.out.printf("<duplicate id=\"%d\" md5=\"%s\">\n", dupNum, me.getKey());
+//      while (it2.hasNext()) {
+//        DupFile f = (DupFile) it2.next();
+//        //System.out.printf("<file path=\"%s\" size=\"%d\"/>\n", f.getAbsolutePath(), f.length());
+//      }
+//      System.out.println("</duplicate>");
+//    }
+//    System.out.println("</duplicates>");
   }
 }

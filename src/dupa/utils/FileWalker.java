@@ -1,6 +1,8 @@
 package dupa.utils;
 
 import dupa.DupFile;
+import dupa.events.DupFileEventProducer;
+import java.io.File;
 //import java.io.File;
 
 /**
@@ -9,35 +11,31 @@ import dupa.DupFile;
  */
 public class FileWalker {
 
-  private FindFileAction defaultAction;
+  private DupFileEventProducer eventProducer;
 
-  public FindFileAction getAction() {
-    return defaultAction;
-  }
-
-  public void setAction(FindFileAction defaultAction) {
-    this.defaultAction = defaultAction;
-  }
-
-  public void walk(DupFile dir) {
-    if (dir.isDirectory()) {
-      if (dir.canRead()) {
-        String[] FilesList = dir.list();
-        for (String fname : FilesList) {
-          DupFile F = new DupFile(fname);
+  public void walk(String parentPath) {
+    File parentFile = new File(parentPath);
+    if (parentFile.isDirectory()) {
+      if (parentFile.canRead()) {
+        String[] fList = parentFile.list();
+        if (!parentPath.endsWith(File.separator)) {
+          parentPath += File.separator;
+        }
+        for (String fname : fList) {
+          File F = new File(parentPath + fname);
           if (F.isDirectory()) {
-            walk(F);
+            walk(F.getAbsolutePath());
           } else {
-            doAction(F);
+            DupFile df = new DupFile(F.getAbsolutePath());
+            df.setSize(F.length());
+            eventProducer.fireNewFileFound(df);
           }
         }
       }
     }
   }
 
-  private boolean doAction(DupFile F) {
-    boolean res = true;
-    getAction().run(F);
-    return res;
+  public void setEventProducer(DupFileEventProducer eventProducer) {
+    this.eventProducer = eventProducer;
   }
 }
