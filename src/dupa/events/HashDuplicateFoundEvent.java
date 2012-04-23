@@ -4,7 +4,6 @@
  */
 package dupa.events;
 
-import dupa.DupFile;
 import dupa.Duplicate;
 import java.util.EventObject;
 
