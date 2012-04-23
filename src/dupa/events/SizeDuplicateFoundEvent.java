@@ -1,14 +1,14 @@
 package dupa.events;
 
-import dupa.DupFile;
+import dupa.Duplicate;
 
 /**
  *
  * @author glumoff
  */
-public class SizeDuplicateFoundEvent extends FileFoundEvent {
+public class SizeDuplicateFoundEvent extends DuplicateFoundEvent {
 
-  public SizeDuplicateFoundEvent(Object source, DupFile dfile) {
-    super(source, dfile);
+  public SizeDuplicateFoundEvent(Object source, Duplicate dup) {
+    super(source, dup);
   }
 }

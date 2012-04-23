@@ -1,26 +1,15 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package dupa.events;
 
-import dupa.Duplicate;
-import java.util.EventObject;
+import dupa.DupFile;
 
 /**
  *
  * @author glumoff
  */
-public class HashDuplicateFoundEvent extends EventObject {
+public class HashDuplicateFoundEvent extends FileFoundEvent {
 
-  private Duplicate dup;
+  public HashDuplicateFoundEvent(Object source, DupFile dfile) {
+    super(source, dfile);
+  }
 
-  public Duplicate getDup() {
-    return dup;
-  }
-  
-  public HashDuplicateFoundEvent(Object source, Duplicate dup) {
-    super(source);
-    this.dup = dup;
-  }
 }

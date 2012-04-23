@@ -2,8 +2,8 @@ package dupa;
 
 import dupa.events.*;
 import dupa.utils.DuplicatesList;
-import dupa.utils.HashDuplicatesList;
 import dupa.utils.FileWalker;
+import dupa.utils.HashDuplicatesList;
 import java.util.ArrayList;
 
 /**
@@ -68,26 +68,38 @@ public class DupFinder implements DupFileListener {
   @Override
   public void NewFileFound(FileFoundEvent ev) {
     //System.out.println("File found: " + ev.getFoundedFile());
+    
     DupFile F = ev.getFile();
     allFiles.add(F);
     Duplicate dup = dupsOnSize.collect(F);
     if (dup != null) {
-      eventProducer.fireSizeDuplicateFound(F);
+      eventProducer.fireSizeDuplicateFound(dup);
     }
   }
 
   @Override
   public void SizeDuplicateFound(SizeDuplicateFoundEvent ev) {
-    System.out.println("Size duplicate found: " + ev.getFile());
-    DupFile F = ev.getFile();
-    Duplicate dup = dupsOnSize.collect(F);
-    if (dup != null) {
-      eventProducer.fireHashDuplicateFound(dup);
+//    System.out.println("Size duplicate found: " + ev.getDup());
+    Duplicate dup = ev.getDup();
+    // Assume that last file is last founded file
+    DupFile F = dup.get(dup.size() - 1); // TODO: perform null testing
+    Duplicate hdup = dupsOnHash.collect(F);
+    //System.out.println("dupsOnHash.collect = " + hdup);
+    if (hdup != null) {
+      eventProducer.fireHashDuplicateFound(F);
+    }
+    if (dup.size() == 2) { // this means we`re firing HashEvent first time
+      F = dup.get(0); // TODO: perform null testing
+      hdup = dupsOnHash.collect(F);
+      //System.out.println("dupsOnHash.collect = " + hdup);
+      if (hdup != null) {
+        eventProducer.fireHashDuplicateFound(F);
+      }
     }
   }
 
   @Override
   public void HashDuplicateFound(HashDuplicateFoundEvent ev) {
-    System.out.println("Exact duplicate found: " + ev.getDup());
+    System.out.println("Exact duplicate found: " + ev.getFile());
   }
 }

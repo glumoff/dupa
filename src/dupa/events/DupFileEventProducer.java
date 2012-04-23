@@ -31,14 +31,14 @@ public class DupFileEventProducer {
     }
   }
 
-  public void fireSizeDuplicateFound(DupFile file) {
-    SizeDuplicateFoundEvent ev = new SizeDuplicateFoundEvent(this, file);
+  public void fireSizeDuplicateFound(Duplicate dup) {
+    SizeDuplicateFoundEvent ev = new SizeDuplicateFoundEvent(this, dup);
     for (DupFileListener listener : listeners) {
       listener.SizeDuplicateFound(ev);
     }
   }
-  public void fireHashDuplicateFound(Duplicate dup) {
-    HashDuplicateFoundEvent ev = new HashDuplicateFoundEvent(this, dup);
+  public void fireHashDuplicateFound(DupFile file) {
+    HashDuplicateFoundEvent ev = new HashDuplicateFoundEvent(this, file);
     for (DupFileListener listener : listeners) {
       listener.HashDuplicateFound(ev);
     }
