@@ -15,7 +15,13 @@ public class Dupa {
     if (args.length > 0) {
       DupFinder finder = new DupFinder();
       finder.addPath(args[0]);
-      finder.find();
+      
+      //finder.find();
+      Thread runner = new Thread(finder);
+      runner.start();
+      
+      System.out.println("\n==================================================");
+      
       //formatOutput(dupList);
     }
   }
